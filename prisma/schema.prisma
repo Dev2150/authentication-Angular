@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+// Create an id field and let Prisma know this is a unique identifier with the @id attribute.
+// Because MongoDB automatically creates an _id field for every collection,
+// you will let Prisma know using the @map attribute that while you are calling this field id in the schema,
+// it should map to the _id field in the database.
+// The code will also define the data type for your id field and set a default value of auto(),
+// which will allow you to make use of MongoDB's automatically generated unique IDs.
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt DateTime @default(now())
+// The @updatedAt attribute will automatically update that field with a current timestamp any time that user is updated.
+    updatedAt DateTime @updatedAt
+    email     String   @unique
+    password  String
+    profile   Profile
+}
+
+// add embedded document
+type Profile {
+  firstName String
+  lastName  String
+  country String
+}
